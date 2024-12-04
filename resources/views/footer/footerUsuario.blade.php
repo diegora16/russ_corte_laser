@@ -53,7 +53,7 @@
     <ul class="mt-12 flex justify-center gap-6 md:gap-8">
       <li>
         <a
-          href="https://www.facebook.com/people/Soluciones-VUCE/61557381595851/"
+          href="https://www.facebook.com/people/Russ-Corte-Laser/61569895550134/"
           rel="noreferrer"
           target="_blank"
           class="text-gray-700 transition hover:text-gray-700/75 dark:text-white dark:hover:text-white/75"
@@ -71,7 +71,7 @@
 
       <li>
         <a
-          href="https://www.instagram.com/solucionesvuce?igsh=MXd2cjJ6ZXBiemYw"
+          href="https://www.instagram.com/cortelaserruss.pe/profilecard/?igsh=NnpiYnk0NGs0cm00"
           rel="noreferrer"
           target="_blank"
           class="text-gray-700 transition hover:text-gray-700/75 dark:text-white dark:hover:text-white/75"
