@@ -83,7 +83,7 @@
             <div class="text-2xl font-bold text-blue-950">
                 Total: <span id="total-compra">S/ 0.00</span>
             </div>
-            <a href="{{ route('carrito.proceder') }}" class="bg-green-500 text-white py-3 px-8 rounded-md hover:bg-green-700 transition inline-flex items-center text-lg font-bold">
+            <a href="{{ route('carrito.proceder') }}" target="_blank" class="bg-green-500 text-white py-3 px-8 rounded-md hover:bg-green-700 transition inline-flex items-center text-lg font-bold">
                 Proceder al Pago <i class="fa-solid fa-arrow-right-long ml-2"></i>
             </a>
         </div>
