@@ -9,7 +9,6 @@ class CarritoController extends Controller
 {
     public function mostrarCarrito(Request $request)
     {
-        // Obtener el carrito de la sesión
         $carrito = $request->session()->get('carrito', []);
         $productos = Producto::whereIn('id', array_keys($carrito))->get();
 
@@ -27,17 +26,14 @@ class CarritoController extends Controller
         $productoId = $request->input('producto_id');
         $cantidad = (int)$request->input('cantidad', 1);
 
-        // Obtener carrito de la sesión
         $carrito = $request->session()->get('carrito', []);
 
-        // Añadir o actualizar el producto en el carrito
         if (isset($carrito[$productoId])) {
             $carrito[$productoId] += $cantidad;
         } else {
             $carrito[$productoId] = $cantidad;
         }
 
-        // Guardar carrito en la sesión
         $request->session()->put('carrito', $carrito);
 
         return response()->json(['success' => true, 'totalCount' => array_sum($carrito)]);
@@ -46,7 +42,7 @@ class CarritoController extends Controller
     public function procederPago(Request $request)
     {
         $carrito = $request->session()->get('carrito', []);
-        $productos = Producto::whereIn('id', array_keys($carrito))->get();
+        $productos = Producto::whereIn('id', array_keys($carrito))->with('imagenes')->get();
 
         $mensaje = "Hola, este es el resumen de tu pedido:\n\n";
         $costoTotal = 0;
@@ -54,8 +50,10 @@ class CarritoController extends Controller
         foreach ($productos as $producto) {
             $cantidad = $carrito[$producto->id];
             $subtotal = $producto->precio * $cantidad;
+            $imagen = $producto->imagenes->first() ? asset($producto->imagenes->first()->ruta) : asset('/img/default.jpg'); // Obtener el enlace de la imagen
 
             $mensaje .= "🔹 *{$producto->nombre}*\n";
+            $mensaje .= "   • Imagen: $imagen\n"; // Agregar enlace de la imagen
             $mensaje .= "   • Cantidad: $cantidad\n";
             $mensaje .= "   • Precio unitario: S/ " . number_format($producto->precio, 2) . "\n";
             $mensaje .= "   • Subtotal: S/ " . number_format($subtotal, 2) . "\n\n";
