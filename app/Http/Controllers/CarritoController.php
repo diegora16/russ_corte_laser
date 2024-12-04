@@ -32,35 +32,36 @@ class CarritoController extends Controller
     }
 
     public function procederPago()
-    {
-        $productos = Carrito::with('producto')->get();
-        $mensaje = "Hola, este es el resumen de tu pedido:\n\n";
+{
+    $productos = Carrito::with('producto.imagenes')->get();
+    $mensaje = "Hola, este es el resumen de tu pedido:\n\n";
 
-        $costoTotal = 0;
+    $costoTotal = 0;
 
-        foreach ($productos as $item) {
-            $nombre = $item->producto->nombre;
-            $imagen = $item->producto->imagen; // URL de la imagen
-            $cantidad = $item->cantidad;
-            $precioUnitario = number_format($item->producto->precio, 2);
-            $subtotal = number_format($item->producto->precio * $item->cantidad, 2);
+    foreach ($productos as $item) {
+        $nombre = $item->producto->nombre;
+        $imagen = $item->producto->imagenes->first() ? asset($item->producto->imagenes->first()->ruta) : asset('/img/default.jpg'); // URL de la imagen
+        $cantidad = $item->cantidad;
+        $precioUnitario = number_format($item->producto->precio, 2);
+        $subtotal = number_format($item->producto->precio * $item->cantidad, 2);
 
-            $mensaje .= "🔹 *$nombre*\n";
-            $mensaje .= "   • Imagen: $imagen\n";
-            $mensaje .= "   • Cantidad: $cantidad\n";
-            $mensaje .= "   • Precio unitario: S/ $precioUnitario\n";
-            $mensaje .= "   • Subtotal: S/ $subtotal\n\n";
+        $mensaje .= "🔹 *$nombre*\n";
+        $mensaje .= "   • Imagen: $imagen\n"; // Enlace directo con texto "Imagen:"
+        $mensaje .= "   • Cantidad: $cantidad\n";
+        $mensaje .= "   • Precio unitario: S/ $precioUnitario\n";
+        $mensaje .= "   • Subtotal: S/ $subtotal\n\n";
 
-            $costoTotal += $item->producto->precio * $item->cantidad;
-        }
-
-        $mensaje .= "💳 *Costo Total: S/ " . number_format($costoTotal, 2) . "*";
-
-        $whatsappNumber = "51912086668"; // Incluye el prefijo del país
-        $url = "https://wa.me/{$whatsappNumber}?text=" . urlencode($mensaje);
-
-        return redirect($url);
+        $costoTotal += $item->producto->precio * $item->cantidad;
     }
+
+    $mensaje .= "💳 *Costo Total: S/ " . number_format($costoTotal, 2) . "*";
+
+    $whatsappNumber = "51912086668"; // Incluye el prefijo del país
+    $url = "https://wa.me/{$whatsappNumber}?text=" . urlencode($mensaje);
+
+    return redirect($url);
+}
+
 
     public function eliminarProducto($id)
     {

@@ -27,7 +27,8 @@
                 @foreach ($carritoItems as $item)
                     <tr data-precio="{{ $item->producto->precio }}" data-id="{{ $item->id }}">
                         <td class="py-2 px-4 border-b flex items-center">
-                            <img src="{{ $item->producto->imagen }}" alt="{{ $item->producto->nombre }}" class="w-12 h-12 object-cover rounded-full mr-4">
+                            <img src="{{ $item->producto->imagenes->first() ? asset($item->producto->imagenes->first()->ruta) : '/img/default.jpg' }}" 
+                                alt="{{ $item->producto->nombre }}" class="w-16 h-16 object-cover rounded mr-4">
                             <span>{{ $item->producto->nombre }}</span>
                         </td>
                         <td class="py-2 px-4 border-b">S/ {{ number_format($item->producto->precio, 2) }}</td>
@@ -51,7 +52,8 @@
         @foreach ($carritoItems as $item)
             <div class="bg-white p-4 rounded-lg shadow-md" data-precio="{{ $item->producto->precio }}" data-id="{{ $item->id }}">
                 <div class="flex items-center mb-4">
-                    <img src="{{ $item->producto->imagen }}" alt="{{ $item->producto->nombre }}" class="w-16 h-16 object-cover rounded-full mr-4">
+                    <img src="{{ $item->producto->imagenes->first() ? asset($item->producto->imagenes->first()->ruta) : '/img/default.jpg' }}" 
+                        alt="{{ $item->producto->nombre }}" class="w-16 h-16 object-cover rounded mr-4">
                     <div>
                         <h2 class="text-lg font-bold text-blue-950">{{ $item->producto->nombre }}</h2>
                         <p class="text-green-700 font-semibold">S/ {{ number_format($item->producto->precio, 2) }}</p>
@@ -81,7 +83,7 @@
             <div class="text-2xl font-bold text-blue-950">
                 Total: <span id="total-compra">S/ 0.00</span>
             </div>
-            <a href="{{ route('carrito.proceder') }}" class="bg-green-500 text-white py-3 px-8 rounded-md hover:bg-green-700 transition inline-flex items-center text-lg font-bold">
+            <a href="{{ route('carrito.proceder') }}" target="_blank" class="bg-green-500 text-white py-3 px-8 rounded-md hover:bg-green-700 transition inline-flex items-center text-lg font-bold">
                 Proceder al Pago <i class="fa-solid fa-arrow-right-long ml-2"></i>
             </a>
         </div>
@@ -104,7 +106,7 @@
                 const subtotal = precio * cantidad;
 
                 row.querySelector('.total-item').textContent = `S/ ${subtotal.toFixed(2)}`;
-                total += subtotal; // Sumar subtotales correctamente
+                total += subtotal; 
             });
             totalCompraSpan.textContent = `S/ ${total.toFixed(2)}`;
         };
@@ -122,7 +124,7 @@
                 const data = await response.json();
                 if (response.ok) {
                     cartCountSpan.textContent = data.totalCount;
-                    calcularTotalCompra(); // Recalcular total después de actualizar cantidad
+                    calcularTotalCompra(); 
                 }
             } catch (error) {
                 console.error('Error al conectar con el servidor:', error);
@@ -141,7 +143,7 @@
                 if (response.ok) {
                     document.querySelector(`[data-id="${id}"]`).remove();
                     cartCountSpan.textContent = data.totalCount;
-                    calcularTotalCompra(); // Recalcular total después de eliminar
+                    calcularTotalCompra(); 
                 } else {
                     console.error('Error al eliminar el producto.');
                 }
@@ -170,6 +172,5 @@
         calcularTotalCompra();
     });
 </script>
-
 
 @endsection

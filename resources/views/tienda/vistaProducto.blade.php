@@ -8,8 +8,8 @@
 
     <!-- Contenedor principal -->
     <div class="bg-white p-6 rounded-lg shadow-md flex flex-wrap md:flex-nowrap gap-8">
-        <!-- Galería de imágenes -->
-        <div class="flex-1">
+        <!-- Para móviles: Imagen principal y miniaturas primero -->
+        <div class="block md:hidden">
             <!-- Imagen principal -->
             <img id="main-image" src="{{ $producto->imagenes->first()->ruta ?? '/img/default.jpg' }}" alt="{{ $producto->nombre }}" class="w-full h-96 object-cover rounded-lg mb-4 shadow-md">
 
@@ -36,6 +36,19 @@
                 <button id="add-to-cart-btn" class="bg-green-500 text-white py-3 px-6 rounded-md hover:bg-green-700 transition flex items-center justify-center text-lg mb-6 mt-4">
                     <i class="fa-solid fa-plus text-xl mr-2"></i> Añadir al carrito
                 </button>
+            </div>
+        </div>
+
+        <!-- Para escritorio: Imagen principal y miniaturas a la izquierda -->
+        <div class="hidden md:block flex-1">
+            <!-- Imagen principal -->
+            <img id="main-image" src="{{ $producto->imagenes->first()->ruta ?? '/img/default.jpg' }}" alt="{{ $producto->nombre }}" class="w-full h-96 object-cover rounded-lg mb-4 shadow-md">
+
+            <!-- Miniaturas -->
+            <div class="flex gap-3">
+                @foreach ($producto->imagenes as $imagen)
+                    <img src="{{ $imagen->ruta }}" alt="Imagen del Producto" class="w-20 h-20 object-cover rounded cursor-pointer border border-gray-300 hover:border-blue-500" onclick="changeImage('{{ $imagen->ruta }}')">
+                @endforeach
             </div>
         </div>
     </div>
