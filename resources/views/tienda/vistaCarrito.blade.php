@@ -24,20 +24,20 @@
                 </tr>
             </thead>
             <tbody id="cart-items">
-                @foreach ($carritoItems as $item)
-                    <tr data-precio="{{ $item->producto->precio }}" data-id="{{ $item->id }}">
+                @foreach ($productos as $producto)
+                    <tr data-precio="{{ $producto->precio }}" data-id="{{ $producto->id }}">
                         <td class="py-2 px-4 border-b flex items-center">
-                            <img src="{{ $item->producto->imagenes->first() ? asset($item->producto->imagenes->first()->ruta) : '/img/default.jpg' }}" 
-                                alt="{{ $item->producto->nombre }}" class="w-16 h-16 object-cover rounded mr-4">
-                            <span>{{ $item->producto->nombre }}</span>
+                            <img src="{{ $producto->imagenes->first() ? asset($producto->imagenes->first()->ruta) : '/img/default.jpg' }}" 
+                                alt="{{ $producto->nombre }}" class="w-16 h-16 object-cover rounded mr-4">
+                            <span>{{ $producto->nombre }}</span>
                         </td>
-                        <td class="py-2 px-4 border-b">S/ {{ number_format($item->producto->precio, 2) }}</td>
+                        <td class="py-2 px-4 border-b">S/ {{ number_format($producto->precio, 2) }}</td>
                         <td class="py-2 px-4 border-b">
-                            <input type="number" value="{{ $item->cantidad }}" class="cantidad w-16 border rounded px-2 py-1" min="1">
+                            <input type="number" value="{{ $producto->cantidad }}" class="cantidad w-16 border rounded px-2 py-1" min="1">
                         </td>
-                        <td class="py-2 px-4 border-b total-item">S/ {{ number_format($item->producto->precio * $item->cantidad, 2) }}</td>
+                        <td class="py-2 px-4 border-b total-item">S/ {{ number_format($producto->precio * $producto->cantidad, 2) }}</td>
                         <td class="py-2 px-4 border-b text-center">
-                            <button class="delete-button text-red-500 hover:text-red-700" data-id="{{ $item->id }}">
+                            <button class="delete-button text-red-500 hover:text-red-700" data-id="{{ $producto->id }}">
                                 <i class="fa-solid fa-trash text-xl"></i>
                             </button>
                         </td>
@@ -49,23 +49,23 @@
 
     <!-- Vista en móvil: Tarjetas -->
     <div class="grid grid-cols-1 gap-4 md:hidden">
-        @foreach ($carritoItems as $item)
-            <div class="bg-white p-4 rounded-lg shadow-md" data-precio="{{ $item->producto->precio }}" data-id="{{ $item->id }}">
+        @foreach ($productos as $producto)
+            <div class="bg-white p-4 rounded-lg shadow-md" data-precio="{{ $producto->precio }}" data-id="{{ $producto->id }}">
                 <div class="flex items-center mb-4">
-                    <img src="{{ $item->producto->imagenes->first() ? asset($item->producto->imagenes->first()->ruta) : '/img/default.jpg' }}" 
-                        alt="{{ $item->producto->nombre }}" class="w-16 h-16 object-cover rounded mr-4">
+                    <img src="{{ $producto->imagenes->first() ? asset($producto->imagenes->first()->ruta) : '/img/default.jpg' }}" 
+                        alt="{{ $producto->nombre }}" class="w-16 h-16 object-cover rounded mr-4">
                     <div>
-                        <h2 class="text-lg font-bold text-blue-950">{{ $item->producto->nombre }}</h2>
-                        <p class="text-green-700 font-semibold">S/ {{ number_format($item->producto->precio, 2) }}</p>
+                        <h2 class="text-lg font-bold text-blue-950">{{ $producto->nombre }}</h2>
+                        <p class="text-green-700 font-semibold">S/ {{ number_format($producto->precio, 2) }}</p>
                     </div>
                 </div>
                 <div class="mb-4">
-                    <label for="cantidad-{{ $item->id }}" class="text-gray-700 font-bold">Cantidad:</label>
-                    <input id="cantidad-{{ $item->id }}" type="number" value="{{ $item->cantidad }}" class="cantidad w-16 border rounded px-2 py-1 ml-2" min="1">
+                    <label for="cantidad-{{ $producto->id }}" class="text-gray-700 font-bold">Cantidad:</label>
+                    <input id="cantidad-{{ $producto->id }}" type="number" value="{{ $producto->cantidad }}" class="cantidad w-16 border rounded px-2 py-1 ml-2" min="1">
                 </div>
-                <p class="mb-4 text-gray-700">Total: <span class="total-item font-bold">S/ {{ number_format($item->producto->precio * $item->cantidad, 2) }}</span></p>
+                <p class="mb-4 text-gray-700">Total: <span class="total-item font-bold">S/ {{ number_format($producto->precio * $producto->cantidad, 2) }}</span></p>
                 <div class="flex justify-between items-center">
-                    <button class="delete-button text-red-500 hover:text-red-700" data-id="{{ $item->id }}">
+                    <button class="delete-button text-red-500 hover:text-red-700" data-id="{{ $producto->id }}">
                         <i class="fa-solid fa-trash text-xl"></i>
                     </button>
                 </div>
@@ -83,7 +83,7 @@
             <div class="text-2xl font-bold text-blue-950">
                 Total: <span id="total-compra">S/ 0.00</span>
             </div>
-            <a href="{{ route('carrito.proceder') }}" target="_blank" class="bg-green-500 text-white py-3 px-8 rounded-md hover:bg-green-700 transition inline-flex items-center text-lg font-bold">
+            <a href="{{ route('carrito.proceder') }}" class="bg-green-500 text-white py-3 px-8 rounded-md hover:bg-green-700 transition inline-flex items-center text-lg font-bold">
                 Proceder al Pago <i class="fa-solid fa-arrow-right-long ml-2"></i>
             </a>
         </div>

@@ -2,89 +2,103 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Carrito;
 use Illuminate\Http\Request;
+use App\Models\Producto;
 
 class CarritoController extends Controller
 {
-    public function mostrarCarrito()
+    public function mostrarCarrito(Request $request)
     {
-        $carritoItems = Carrito::with('producto')->get();
-        return view('tienda.vistaCarrito', compact('carritoItems'));
+        // Obtener el carrito de la sesión
+        $carrito = $request->session()->get('carrito', []);
+        $productos = Producto::whereIn('id', array_keys($carrito))->get();
+
+        // Añadir cantidades al array de productos
+        $productos = $productos->map(function ($producto) use ($carrito) {
+            $producto->cantidad = $carrito[$producto->id];
+            return $producto;
+        });
+
+        return view('tienda.vistaCarrito', compact('productos'));
     }
 
     public function agregarProducto(Request $request)
     {
-        $carritoItem = Carrito::where('producto_id', $request->producto_id)->first();
+        $productoId = $request->input('producto_id');
+        $cantidad = (int)$request->input('cantidad', 1);
 
-        if ($carritoItem) {
-            $carritoItem->cantidad += $request->cantidad;
-            $carritoItem->save();
+        // Obtener carrito de la sesión
+        $carrito = $request->session()->get('carrito', []);
+
+        // Añadir o actualizar el producto en el carrito
+        if (isset($carrito[$productoId])) {
+            $carrito[$productoId] += $cantidad;
         } else {
-            Carrito::create([
-                'producto_id' => $request->producto_id,
-                'cantidad' => $request->cantidad
-            ]);
+            $carrito[$productoId] = $cantidad;
         }
 
-        $totalCount = Carrito::sum('cantidad');
-        return response()->json(['success' => true, 'totalCount' => $totalCount]);
+        // Guardar carrito en la sesión
+        $request->session()->put('carrito', $carrito);
+
+        return response()->json(['success' => true, 'totalCount' => array_sum($carrito)]);
     }
 
-    public function procederPago()
-{
-    $productos = Carrito::with('producto.imagenes')->get();
-    $mensaje = "Hola, este es el resumen de tu pedido:\n\n";
-
-    $costoTotal = 0;
-
-    foreach ($productos as $item) {
-        $nombre = $item->producto->nombre;
-        $imagen = $item->producto->imagenes->first() ? asset($item->producto->imagenes->first()->ruta) : asset('/img/default.jpg'); // URL de la imagen
-        $cantidad = $item->cantidad;
-        $precioUnitario = number_format($item->producto->precio, 2);
-        $subtotal = number_format($item->producto->precio * $item->cantidad, 2);
-
-        $mensaje .= "🔹 *$nombre*\n";
-        $mensaje .= "   • Imagen: $imagen\n"; // Enlace directo con texto "Imagen:"
-        $mensaje .= "   • Cantidad: $cantidad\n";
-        $mensaje .= "   • Precio unitario: S/ $precioUnitario\n";
-        $mensaje .= "   • Subtotal: S/ $subtotal\n\n";
-
-        $costoTotal += $item->producto->precio * $item->cantidad;
-    }
-
-    $mensaje .= "💳 *Costo Total: S/ " . number_format($costoTotal, 2) . "*";
-
-    $whatsappNumber = "51912086668"; // Incluye el prefijo del país
-    $url = "https://wa.me/{$whatsappNumber}?text=" . urlencode($mensaje);
-
-    return redirect($url);
-}
-
-
-    public function eliminarProducto($id)
+    public function procederPago(Request $request)
     {
-        $carritoItem = Carrito::findOrFail($id);
-        $carritoItem->delete();
+        $carrito = $request->session()->get('carrito', []);
+        $productos = Producto::whereIn('id', array_keys($carrito))->get();
 
-        $totalCount = Carrito::sum('cantidad');
-        return response()->json(['success' => true, 'totalCount' => $totalCount]);
+        $mensaje = "Hola, este es el resumen de tu pedido:\n\n";
+        $costoTotal = 0;
+
+        foreach ($productos as $producto) {
+            $cantidad = $carrito[$producto->id];
+            $subtotal = $producto->precio * $cantidad;
+
+            $mensaje .= "🔹 *{$producto->nombre}*\n";
+            $mensaje .= "   • Cantidad: $cantidad\n";
+            $mensaje .= "   • Precio unitario: S/ " . number_format($producto->precio, 2) . "\n";
+            $mensaje .= "   • Subtotal: S/ " . number_format($subtotal, 2) . "\n\n";
+
+            $costoTotal += $subtotal;
+        }
+
+        $mensaje .= "💳 *Costo Total: S/ " . number_format($costoTotal, 2) . "*";
+
+        $whatsappNumber = "51912086668";
+        $url = "https://wa.me/{$whatsappNumber}?text=" . urlencode($mensaje);
+
+        return redirect($url);
+    }
+
+    public function eliminarProducto(Request $request, $id)
+    {
+        $carrito = $request->session()->get('carrito', []);
+
+        if (isset($carrito[$id])) {
+            unset($carrito[$id]);
+            $request->session()->put('carrito', $carrito);
+        }
+
+        return response()->json(['success' => true, 'totalCount' => array_sum($carrito)]);
     }
 
     public function actualizarCantidad(Request $request, $id)
     {
-        $carritoItem = Carrito::findOrFail($id);
-        $carritoItem->cantidad = $request->cantidad;
-        $carritoItem->save();
+        $cantidad = (int)$request->input('cantidad', 1);
+        $carrito = $request->session()->get('carrito', []);
 
-        $totalCount = Carrito::sum('cantidad');
-        return response()->json(['success' => true, 'totalCount' => $totalCount]);
+        if (isset($carrito[$id])) {
+            $carrito[$id] = $cantidad;
+            $request->session()->put('carrito', $carrito);
+        }
+
+        return response()->json(['success' => true, 'totalCount' => array_sum($carrito)]);
     }
 
-    public function contarProductos()
+    public function contarProductos(Request $request)
     {
-        $count = Carrito::sum('cantidad');
-        return response()->json(['count' => $count]);
+        $carrito = $request->session()->get('carrito', []);
+        return response()->json(['count' => array_sum($carrito)]);
     }
 }
