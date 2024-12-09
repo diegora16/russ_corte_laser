@@ -8,12 +8,11 @@
   @vite('resources/css/app.css')
 </head>
 <body class="bg-cover bg-center bg-fixed">
-    @include('header.headerUsuario')
+    @include('auth.header.headerA')
 
     <div class="container mx-auto mt-10 md:mb-40 bg-white bg-opacity-75 p-5 rounded-lg">
       @yield('content')
     </div>
     
-    @include('footer.footerUsuario')
 </body>
 </html>

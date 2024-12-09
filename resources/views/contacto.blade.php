@@ -16,7 +16,7 @@
                 <p class="mt-3 mx-2 text-center md:text-xl leading-loose text-gray-600">Contáctanos directamente por WhatsApp:</p>
                 <div class="flex justify-center mt-6">
                     {{-- Botón de WhatsApp grande --}}
-                    <a href="https://wa.link/6t3dez" target="_blank">
+                    <a href="https://wa.link/mdtsyx" target="_blank">
                         <button class="flex items-center bg-green-700 border-0 py-4 px-10 focus:outline-none hover:bg-green-800 rounded-full text-2xl text-white font-bold">
                             <i class="fa-brands fa-whatsapp mr-3 text-4xl"></i>
                             Escríbenos en WhatsApp

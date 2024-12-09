@@ -1,10 +1,10 @@
 <header class="text-white body-font border-b border-gray-300 bg-gray-900 rounded-b-2xl shadow-md">
   <div class="container mx-auto flex flex-wrap p-1 flex-col md:flex-row items-center">
     <a class="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0" href="/">
-      <img src="/img/logoheader.png" alt="Logo" class="w-36 h-30 p-2" />
-      <span class="text-sm text-white mx-3">Diseños perfectos, grabados únicos</span>
+      <img src="/img/logoheader.png" alt="Logo" class="md:w-48 h-30 p-2 w-36" />
+      <span class="md:text-sm text-white mx-3 text-xs">Diseños perfectos, grabados únicos</span>
     </a>
-    <nav class="md:ml-auto flex flex-wrap items-center text-base justify-center">
+    <nav class="md:ml-auto flex flex-wrap items-center text-base justify-center ml-7">
       <a class="mr-5 hover:text-blue-900" href="/"><i class="fa-solid fa-house mr-2"></i>Inicio</a>
       <a class="mr-5 hover:text-blue-900" href="/Tienda"><i class="fa-solid fa-store mr-2"></i>Tienda</a>
       <a class="mr-5 hover:text-blue-900" href="/Nosotros"><i class="fa-solid fa-users mr-2"></i>Nosotros</a>

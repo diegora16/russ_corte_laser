@@ -12,6 +12,7 @@ class DatabaseSeeder extends Seeder
             ProductosSeeder::class,
             ImagenesSeeder::class,
             CarritosSeeder::class,
+            UserSeeder::class,
         ]);
     }
 }
